@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM --platform=$BUILDPLATFORM python:3.10-alpine as backend-deps
+FROM python:3.10-alpine as backend-deps
 
 RUN apk add --no-cache gcc g++ pango fontconfig ttf-freefont font-noto terminus-font \
     musl-dev mariadb-dev libffi-dev openssl-dev; \
@@ -31,7 +31,7 @@ RUN if [ -e optional-requirements.txt ]; then \
     pip install -r optional-requirements.txt; \
     fi
 
-FROM --platform=$BUILDPLATFORM backend-deps AS backend
+FROM backend-deps AS backend
 
 ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1

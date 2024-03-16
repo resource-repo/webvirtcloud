@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM --platform=$BUILDPLATFORM node:18-alpine AS frontend-deps
+FROM node:18-alpine AS frontend-deps
 
 WORKDIR /frontend/apps/web/
 
@@ -20,7 +20,7 @@ COPY ./webvirtfrontend/ /frontend/
 
 RUN npm install
 
-FROM --platform=$BUILDPLATFORM frontend-deps AS frontend-build
+FROM frontend-deps AS frontend-build
 
 WORKDIR /frontend/apps/web/
 
@@ -30,7 +30,7 @@ COPY ./custom.env /frontend/custom.env
 
 RUN set -a; . /frontend/global.env; . /frontend/custom.env; set +a; npm run build
 
-FROM --platform=$BUILDPLATFORM caddy:2.6.4-alpine AS frontend
+FROM caddy:2.6.4-alpine AS frontend
 
 COPY --from=frontend-build /frontend/apps/web/dist/ /usr/share/caddy/client/
 
