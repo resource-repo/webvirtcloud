@@ -78,7 +78,10 @@ function git_pull() {
 function add_to_custom_env() {
     echo -e "Enter your wildcard domain. Example: webvirt.local"
     read -p "Enter: " domain_name
+    echo -e "Enter your public port. Example: 80"
     read -p "Enter: " server_port
+    echo -e "Enter your dcoker engine ip. Example: 192.168.1.100"
+    read -p "Enter: " dcoker_engine_ip
 
     echo "BASE_DOMAIN=${domain_name}:${server_port}" > custom.env
     echo "API_DOMAIN=api.${domain_name}:${server_port}" >> custom.env
@@ -93,6 +96,7 @@ function add_to_custom_env() {
     echo "CLIENT_DOMAIN_NP=client.${domain_name}" >> custom.env
     echo "MANAGE_DOMAIN_NP=manage.${domain_name}" >> custom.env
     echo "CONSOLE_DOMAIN_NP=console.${domain_name}" >> custom.env
+    echo "DOKCER_ENGINE_IP=${dcoker_engine_ip}" >> custom.env
 
     echo -e "\nWildcard domain: "${domain_name}" added to custom.env\n"
 }
