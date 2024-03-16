@@ -24,7 +24,7 @@ RUN apk add --no-cache gcc g++ pango fontconfig ttf-freefont font-noto terminus-
 WORKDIR /requirements
 
 COPY ./webvirtbackend/requirements/production.txt /requirements/requirements.txt
-COPY ./optional-requirements.txt* /requirements/
+# COPY ./optional-requirements.txt* /requirements/
 
 RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 RUN pip install -U pip wheel setuptools
