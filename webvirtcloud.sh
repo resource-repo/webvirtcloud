@@ -97,6 +97,8 @@ function add_to_custom_env() {
     echo "MANAGE_DOMAIN_NP=manage.${domain_name}" >> custom.env
     echo "CONSOLE_DOMAIN_NP=console.${domain_name}" >> custom.env
     echo "DOKCER_ENGINE_IP=${dcoker_engine_ip}" >> custom.env
+    echo "SESSION_COOKIE_DOMAIN=${domain_name}" >> custom.env
+
 
     echo -e "\nWildcard domain: "${domain_name}" added to custom.env\n"
 }
