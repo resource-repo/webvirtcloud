@@ -11,7 +11,7 @@ services:
     ports:
       - 37703:80
     volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ${WEBVIRT_PROJECT_DIR}/Caddyfile:/etc/caddy/Caddyfile
     env_file:
       - global.env
       - custom.env
@@ -113,7 +113,7 @@ services:
     container_name: webvirtcloud-mariadb
     hostname: webvirtcloud-mariadb
     volumes:
-      - ./.mysql:/var/lib/mysql
+      - ${WEBVIRT_PROJECT_DIR}/.mysql:/var/lib/mysql
     env_file:
       - global.env
       - custom.env
