@@ -32,7 +32,7 @@ function start_webvirtcloud() {
     fi
 
     echo "Building WebVirtCloud..."
-    docker compose build backend --no-cache
+    docker compose build webvirtcloud-backend --no-cache
     
     echo "Start WebVirtCloud..."
     docker compose up -d
@@ -46,7 +46,7 @@ function start_webvirtcloud() {
 # Load initial data
 function load_initial_data() {
     echo "Loading initial data..."
-    docker compose exec backend python manage.py loaddata initial_data
+    docker compose exec webvirtcloud-backend python manage.py loaddata initial_data
 }
 
 # Init and update submodules
