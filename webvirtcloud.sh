@@ -78,12 +78,22 @@ function git_pull() {
 function add_to_custom_env() {
     echo -e "Enter your wildcard domain. Example: webvirt.local"
     read -p "Enter: " domain_name
-    echo "BASE_DOMAIN=${domain_name}" > custom.env
-    echo "API_DOMAIN=api.${domain_name}" >> custom.env
-    echo "ASSETS_DOMAIN=assets.${domain_name}" >> custom.env
-    echo "CLIENT_DOMAIN=client.${domain_name}" >> custom.env
-    echo "MANAGE_DOMAIN=manage.${domain_name}" >> custom.env
-    echo "CONSOLE_DOMAIN=console.${domain_name}" >> custom.env
+    read -p "Enter: " server_port
+
+    echo "BASE_DOMAIN=${domain_name}:${server_port}" > custom.env
+    echo "API_DOMAIN=api.${domain_name}:${server_port}" >> custom.env
+    echo "ASSETS_DOMAIN=assets.${domain_name}:${server_port}" >> custom.env
+    echo "CLIENT_DOMAIN=client.${domain_name}:${server_port}" >> custom.env
+    echo "MANAGE_DOMAIN=manage.${domain_name}:${server_port}" >> custom.env
+    echo "CONSOLE_DOMAIN=console.${domain_name}:${server_port}" >> custom.env
+
+    echo "BASE_DOMAIN_NP=${domain_name}" >> custom.env
+    echo "API_DOMAIN_NP=api.${domain_name}" >> custom.env
+    echo "ASSETS_DOMAIN_NP=assets.${domain_name}" >> custom.env
+    echo "CLIENT_DOMAIN_NP=client.${domain_name}" >> custom.env
+    echo "MANAGE_DOMAIN_NP=manage.${domain_name}" >> custom.env
+    echo "CONSOLE_DOMAIN_NP=console.${domain_name}" >> custom.env
+
     echo -e "\nWildcard domain: "${domain_name}" added to custom.env\n"
 }
 

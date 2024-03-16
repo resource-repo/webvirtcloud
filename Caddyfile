@@ -13,31 +13,18 @@
   }
 }
 
-{$ASSETS_DOMAIN}:80 {
+{$ASSETS_DOMAIN_NP}:37703 {
   root * /usr/share/caddy/assets/
   file_server
 }
 
-{$ASSETS_DOMAIN}:443 {
-  tls internal
-  root * /usr/share/caddy/assets/
-  file_server
-}
-
-{$CLIENT_DOMAIN}:80 {
+{$CLIENT_DOMAIN_NP}:37703 {
   root * /usr/share/caddy/client/
   try_files {path} {path}/ /index.html
   file_server
 }
 
-{$CLIENT_DOMAIN}:443 {
-  tls internal
-  root * /usr/share/caddy/client/
-  try_files {path} {path}/ /index.html
-  file_server
-}
-
-{$API_DOMAIN}:80 {
+{$API_DOMAIN_NP}:37703 {
   import cors
   redir /admin / 301
   redir /metadata / 301
@@ -57,7 +44,7 @@
   
   handle_path /account/* {
     rewrite * /account{uri}
-    reverse_proxy http://backend:8000 {
+    reverse_proxy http://webvirtcloud-backend:37701 {
       header_up Host {host}
       header_up X-Forwarded-Proto {scheme}
       header_up X-Forwarded-For {remote}
@@ -68,7 +55,7 @@
 
   handle_path /v1/* {
     rewrite * /api/v1{uri}
-    reverse_proxy http://backend:8000 {
+    reverse_proxy http://webvirtcloud-backend:37701 {
       header_up Host {host}
       header_up X-Forwarded-Proto {scheme}
       header_up X-Forwarded-For {remote}
@@ -78,73 +65,31 @@
   }
 }
 
-{$API_DOMAIN}:443 {
-  import cors
-  tls internal
-  
-  redir /admin / 301
-  redir /metadata / 301
-
-  handle /favicon.ico {
-    file_server
-  }
-  handle /robots.txt {
-    file_server
-  }
-  handle /admin* {
-    redir / 301
-  }
-  handle /metadata* {
-    redir / 301
-  }
-  
-  handle_path /account/* {
-    rewrite * /account{uri}
-    reverse_proxy http://backend:8000 {
-      header_up Host {host}
-      header_up X-Forwarded-Proto {scheme}
-      header_up X-Forwarded-For {remote}
-      header_up X-Real-IP {remote}
-      header_down Access-Control-Allow-Origin *
-    }
-  }
-
-  handle_path /v1/* {
-    rewrite * /api/v1{uri}
-    reverse_proxy http://backend:8000 {
-      header_up Host {host}
-      header_up X-Forwarded-Proto {scheme}
-      header_up X-Forwarded-For {remote}
-      header_up X-Real-IP {remote}
-      header_down Access-Control-Allow-Origin *
-    }
-  }
-}
-
-{$MANAGE_DOMAIN}:80 {
+{$MANAGE_DOMAIN_NP}:37703 {
   redir / /admin 301
-  reverse_proxy http://backend:8000
+  reverse_proxy http://webvirtcloud-backend:37701
 }
 
-{$MANAGE_DOMAIN}:443 {
-  tls internal
-  redir / /admin 301
-  reverse_proxy http://backend:8000
-}
-
-{$CONSOLE_DOMAIN}:80 {
-  reverse_proxy http://novnc:6080
-} 
-
-{$CONSOLE_DOMAIN}:443 {
-  tls internal
-  reverse_proxy http://novnc:6080
+{$CONSOLE_DOMAIN_NP}:37703 {
+  reverse_proxy http://webvirtcloud-bnovnc:37702
 } 
 
 169.254.169.254:80 {
   handle_path /metadata/* {
     rewrite * /metadata{uri}
-    reverse_proxy http://backend:8000 {
+    reverse_proxy http://webvirtcloud-backend:37701 {
+      header_up Host {host}
+      header_up X-Forwarded-Proto {scheme}
+      header_up X-Forwarded-For {remote}
+      header_up X-Real-IP {remote}
+    }
+  }
+}
+
+169.254.169.254:37703 {
+  handle_path /metadata/* {
+    rewrite * /metadata{uri}
+    reverse_proxy http://webvirtcloud-backend:37701 {
       header_up Host {host}
       header_up X-Forwarded-Proto {scheme}
       header_up X-Forwarded-For {remote}

@@ -15,7 +15,7 @@
 FROM --platform=$BUILDPLATFORM python:3.10-alpine as backend-deps
 
 RUN apk add --no-cache gcc g++ pango fontconfig ttf-freefont font-noto terminus-font \
-                       musl-dev mariadb-dev libffi-dev openssl-dev; \
+    musl-dev mariadb-dev libffi-dev openssl-dev; \
     fc-cache -f; \
     rm -rf /var/cache/apk/*
 
@@ -24,10 +24,11 @@ WORKDIR /requirements
 COPY ./webvirtbackend/requirements/production.txt /requirements/requirements.txt
 COPY ./optional-requirements.txt* /requirements/
 
+RUN pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
 RUN pip install -U pip wheel setuptools
 RUN pip install -r requirements.txt
 RUN if [ -e optional-requirements.txt ]; then \
-        pip install -r optional-requirements.txt; \
+    pip install -r optional-requirements.txt; \
     fi
 
 FROM --platform=$BUILDPLATFORM backend-deps AS backend

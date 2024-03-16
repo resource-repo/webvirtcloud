@@ -2,40 +2,39 @@ version: "3.7"
 
 services:
 
-  frontend:
+  webvirtcloud-frontend:
     build:
       context: .
       dockerfile: Dockerfile.frontend
     container_name: webvirtcloud-frontend
-    hostname: frontend
+    hostname: webvirtcloud-frontend
     ports:
-      - 80:80
-      - 443:443
+      - 37703:80
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile
     env_file:
       - global.env
       - custom.env
 
-  backend:
+  webvirtcloud-backend:
     build:
       context: .
       dockerfile: Dockerfile.backend
     container_name: webvirtcloud-backend
-    hostname: backend
+    hostname: webvirtcloud-backend
     ports:
-      - 127.0.0.1:8000:8000
+      - 127.0.0.1:37701:8000
     command: gunicorn webvirtcloud.wsgi:application --bind 0.0.0.0:8000
     env_file:
       - global.env
       - custom.env
     depends_on:
-      backend_db_migration:
+      webvirtcloud-backend_db_migration:
         condition: service_completed_successfully
-      mariadb:
+      webvirtcloud-mariadb:
         condition: service_healthy
 
-  backend_db_migration:
+  webvirtcloud-backend_db_migration:
     build:
       context: .
       dockerfile: Dockerfile.backend
@@ -45,31 +44,31 @@ services:
       - global.env
       - custom.env
     depends_on:
-      mariadb:
+      webvirtcloud-mariadb:
         condition: service_healthy
 
-  novnc:
+  webvirtcloud-novnc:
     build:
       context: .
       dockerfile: Dockerfile.backend
     container_name: webvirtcloud-novnc
-    hostname: novnc
+    hostname: webvirtcloud-novnc
     ports:
-      - 127.0.0.1:6080:6080
+      - 127.0.0.1:37702:6080
     command: python3 manage.py novncd --verbose
     env_file:
       - global.env
       - custom.env
     depends_on:
-      mariadb:
+      webvirtcloud-mariadb:
         condition: service_healthy
 
-  worker:
+  webvirtcloud-worker:
     build:
       context: .
       dockerfile: Dockerfile.backend
     container_name: webvirtcloud-worker
-    hostname: worker
+    hostname: webvirtcloud-worker
     command: celery -A webvirtcloud worker -l info
     env_file:
       - global.env
@@ -82,54 +81,61 @@ services:
       timeout: 5s
       retries: 3
     depends_on:
-      backend_db_migration:
+      webvirtcloud-backend_db_migration:
         condition: service_completed_successfully
-      mariadb:
+      webvirtcloud-mariadb:
         condition: service_healthy
-      rabbitmq:
+      webvirtcloud-rabbitmq:
         condition: service_healthy
 
-  scheduler:
+  webvirtcloud-scheduler:
     build:
       context: .
       dockerfile: Dockerfile.backend
     container_name: webvirtcloud-scheduler
-    hostname: scheduler
+    hostname: webvirtcloud-scheduler
     command: celery -A webvirtcloud beat -l info
     env_file:
       - global.env
       - custom.env
     depends_on:
-      backend_db_migration:
+      webvirtcloud-backend_db_migration:
         condition: service_completed_successfully
-      worker:
+      webvirtcloud-worker:
         condition: service_healthy
-      mariadb:
+      webvirtcloud-mariadb:
         condition: service_healthy
-      rabbitmq:
+      webvirtcloud-rabbitmq:
         condition: service_healthy
 
-  mariadb:
+  webvirtcloud-mariadb:
     image: mariadb:10.6.10
     container_name: webvirtcloud-mariadb
-    hostname: mariadb
+    hostname: webvirtcloud-mariadb
     volumes:
       - ./.mysql:/var/lib/mysql
     env_file:
       - global.env
       - custom.env
     healthcheck:
-      test: [ "CMD", "healthcheck.sh", "--su-mysql", "--connect", "--innodb_initialized" ]
+      test:
+        [
+          "CMD",
+          "healthcheck.sh",
+          "--su-mysql",
+          "--connect",
+          "--innodb_initialized"
+        ]
       start_period: 1m
       start_interval: 10s
       interval: 1m
       timeout: 5s
       retries: 3
 
-  rabbitmq:
+  webvirtcloud-rabbitmq:
     image: rabbitmq:3.10.13
     container_name: webvirtcloud-rabbitmq
-    hostname: rabbitmq
+    hostname: webvirtcloud-rabbitmq
     env_file:
       - global.env
       - custom.env
