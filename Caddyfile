@@ -13,18 +13,18 @@
   }
 }
 
-{$ASSETS_DOMAIN_NP}:37703 {
+{$ASSETS_DOMAIN_NP}:80 {
   root * /usr/share/caddy/assets/
   file_server
 }
 
-{$CLIENT_DOMAIN_NP}:37703 {
+{$CLIENT_DOMAIN_NP}:80 {
   root * /usr/share/caddy/client/
   try_files {path} {path}/ /index.html
   file_server
 }
 
-{$API_DOMAIN_NP}:37703 {
+{$API_DOMAIN_NP}:80 {
   import cors
   redir /admin / 301
   redir /metadata / 301
@@ -65,28 +65,16 @@
   }
 }
 
-{$MANAGE_DOMAIN_NP}:37703 {
+{$MANAGE_DOMAIN_NP}:80 {
   redir / /admin 301
   reverse_proxy http://webvirtcloud-backend:37701
 }
 
-{$CONSOLE_DOMAIN_NP}:37703 {
+{$CONSOLE_DOMAIN_NP}:80 {
   reverse_proxy http://webvirtcloud-bnovnc:37702
 } 
 
 169.254.169.254:80 {
-  handle_path /metadata/* {
-    rewrite * /metadata{uri}
-    reverse_proxy http://webvirtcloud-backend:37701 {
-      header_up Host {host}
-      header_up X-Forwarded-Proto {scheme}
-      header_up X-Forwarded-For {remote}
-      header_up X-Real-IP {remote}
-    }
-  }
-}
-
-169.254.169.254:37703 {
   handle_path /metadata/* {
     rewrite * /metadata{uri}
     reverse_proxy http://webvirtcloud-backend:37701 {

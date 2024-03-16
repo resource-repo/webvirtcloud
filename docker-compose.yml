@@ -23,7 +23,7 @@ services:
     container_name: webvirtcloud-backend
     hostname: webvirtcloud-backend
     ports:
-      - 127.0.0.1:37701:8000
+      - 37701:8000
     command: gunicorn webvirtcloud.wsgi:application --bind 0.0.0.0:8000
     env_file:
       - global.env
@@ -54,7 +54,7 @@ services:
     container_name: webvirtcloud-novnc
     hostname: webvirtcloud-novnc
     ports:
-      - 127.0.0.1:37702:6080
+      - 37702:6080
     command: python3 manage.py novncd --verbose
     env_file:
       - global.env
