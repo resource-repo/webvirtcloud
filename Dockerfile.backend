@@ -14,6 +14,8 @@
 
 FROM python:3.10-alpine as backend-deps
 
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories
+RUN apk update
 RUN apk add --no-cache gcc g++ pango fontconfig ttf-freefont font-noto terminus-font \
     musl-dev mariadb-dev libffi-dev openssl-dev; \
     fc-cache -f; \
