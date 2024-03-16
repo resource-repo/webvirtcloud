@@ -44,7 +44,7 @@
   
   handle_path /account/* {
     rewrite * /account{uri}
-    reverse_proxy http://webvirtcloud-backend:37701 {
+    reverse_proxy http://{$API_DOMAIN_NP}:37701 {
       header_up Host {host}
       header_up X-Forwarded-Proto {scheme}
       header_up X-Forwarded-For {remote}
@@ -55,7 +55,7 @@
 
   handle_path /v1/* {
     rewrite * /api/v1{uri}
-    reverse_proxy http://webvirtcloud-backend:37701 {
+    reverse_proxy http://{$API_DOMAIN_NP}:37701 {
       header_up Host {host}
       header_up X-Forwarded-Proto {scheme}
       header_up X-Forwarded-For {remote}
@@ -67,17 +67,17 @@
 
 {$MANAGE_DOMAIN_NP}:80 {
   redir / /admin 301
-  reverse_proxy http://webvirtcloud-backend:37701
+  reverse_proxy http://{$API_DOMAIN_NP}:37701
 }
 
 {$CONSOLE_DOMAIN_NP}:80 {
-  reverse_proxy http://webvirtcloud-bnovnc:37702
+  reverse_proxy http://{$CONSOLE_DOMAIN_NP}:37702
 } 
 
 169.254.169.254:80 {
   handle_path /metadata/* {
     rewrite * /metadata{uri}
-    reverse_proxy http://webvirtcloud-backend:37701 {
+    reverse_proxy http://{$API_DOMAIN_NP}:37701 {
       header_up Host {host}
       header_up X-Forwarded-Proto {scheme}
       header_up X-Forwarded-For {remote}
